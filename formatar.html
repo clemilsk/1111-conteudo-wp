@@ -1,0 +1,199 @@
+<?php get_header(); ?>
+<main>
+    <section>
+    <?php $directory = get_template_directory_uri(); ?>
+        <div class="view" style="background-image: url('<?php echo $directory;?>/assets/images/top-background.jpg');
+    background-repeat: no-repeat; background-clip: padding-box; background-size: cover;  background-position: center center;">
+            <div class="mask rgba-gradient align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center text-sm-center text-md-center">
+                            <div class="col-md-12 text-slide">          
+                                    <button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"></path>
+                                            <path d="M0 0h24v24H0z" fill="none"></path>
+                                        </svg>
+                                    </button>
+                                <div class="mb-4">Destaque 01 | Campanha</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12" style="height: 660px;">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+            <div class="container-fluid" style="border: 1px solid red">
+                <div class="row">
+                        <div class="col-sm-12">
+                            <?php query_posts($query_string . '&cat=5'); ?>
+                            <?php
+                                //Se ouver posts
+                                if( have_posts() ): 
+                                    //Enquanto ouver posts mostre
+                                    while( have_posts() ): the_post();
+                            ?>
+                                <div class="container">
+                                    <article style="border: 1px solid green; overflow: auto;">
+                                        <h2><?php the_title(); ?></h2>
+                                        <?php the_content(); ?>
+                                    </article>
+                                </div>
+                            <?php
+                                endwhile;
+                            else:
+                            ?>
+                                <p>Conteúdo Quem Somos não foi encontrado!</p>
+                            <?php
+                                endif;
+                            ?>
+                        </div>
+                </div>
+            </div>
+    </section>
+  
+</main>
+<?php get_footer(); ?>
+
+<?php  
+   $gallery_shortcode_1 = '[gallery link="file" size="medium" include = "417"]'; 
+   $gallery_shortcode_2 = '[gallery link="file" size="medium" include = "416"]'; 
+   $gallery_shortcode_3 = '[gallery link="file" size="medium" include = "415"]'; 
+
+?>
+<main>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                     <?php print apply_filters( 'the_content', $gallery_shortcode_1 ); ?>
+                </div>
+                <div class="col-md-4">
+                     <?php print apply_filters( 'the_content', $gallery_shortcode_2 ); ?>
+                </div>
+                <div class="col-md-4">
+                     <?php print apply_filters( 'the_content', $gallery_shortcode_3 ); ?>
+                </div>
+            </div>
+        </div>
+    </section>  
+
+
+
+    #gallery-1 .gallery-item:hover{
+        height: 100%;
+        width: 100%;
+        opacity: 0.2;
+        transition: .5s ease;
+    }
+    
+    #gallery-1 .gallery-caption {
+        margin-top: -150px !important;
+        font-family: 'Gotham-book', sans-serif !important;
+        font-size: 2rem !important;
+        text-align:center !important;
+        opacity:0;
+    }
+    
+    #gallery-1 .gallery-caption:hover{
+        opacity:1;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+
+
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                    <div class="col-sm-12">
+                        <?php query_posts($query_string . '&cat=8'); ?>
+                        <?php
+                            //Se ouver posts
+                            if( have_posts() ): 
+                                //Enquanto ouver posts mostre
+                                while( have_posts() ): the_post();
+                        ?>
+                            <div class="container" style="margin: 100px 0 200px 0">
+                                <div class="row">
+                                    <!--<h2><?php the_title(); ?></h2>-->
+                                    <div class="col-md-12 meio">
+                                        <a href="#" class="js-video-button" data-channel="video" data-video-url="http://developer.a-blogcms.jp/themes/developer/movies/2.8.0.mp4">
+                                            <?php the_content(); ?>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php
+                            endwhile;
+                        else:
+                        ?>
+                            <p>Conteúdo Quem Somos não foi encontrado!</p>
+                        <?php
+                            endif;
+                        ?>
+                    </div>
+            </div>
+        </div>
+</section>
+
+
+<?php get_header(); ?>
+<main>
+    <!--[foogallery id="502"]-->
+    <?php //echo do_shortcode('[foogallery id="502"]'); ?>
+
+    <?php 
+        $connect = mysqli_connect("localhost", "root", "vagrant", "wp_site");  
+
+        if (mysqli_connect_errno()){
+            echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        }
+
+        $query = "SELECT * , (
+            SELECT p.guid
+            FROM wp_cl_postmeta pm, wp_cl_posts p
+            WHERE pm.meta_key = '_thumbnail_id'
+            AND pm.post_id = post.id
+            AND p.ID = pm.meta_value
+            ) AS imagem_destacada
+            FROM wp_cl_posts post
+            WHERE post_status = 'publish'
+            AND post_type = 'post'
+            LIMIT 0 , 30";  
+
+        $result = mysqli_query($connect, $query);     
+        $row = mysqli_fetch_assoc($result);
+   ?> 
+    <section>
+        <div class="container" style="padding-top: 20%;">
+            <div class="row">
+                <div class="col-md-12 mt-5"> 
+                  <?php 
+                     while($row = mysqli_fetch_assoc($result)) 
+                     {  
+                  ?>  
+                     <a href="#" class="js-video-button" data-channel="video" data-video-url="http://developer.a-blogcms.jp/themes/developer/movies/2.8.0.mp4">
+                         <?php echo do_shortcode($row['post_content']); ?>
+                     </a>
+                     
+                  <?php
+                     } 
+                  ?>
+                </div>
+            </div>
+        </div>
+    </section> 
+</main>
+<?php get_footer(); ?>
